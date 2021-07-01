@@ -3,7 +3,8 @@ import { AuthenticationService } from '../services/authentication.service';
 import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
 import { CrudService } from './../services/crud.service';
 import { FormGroup,FormBuilder, FormControl } from '@angular/forms';
-
+import { NavController } from '@ionic/angular';
+import { Placeholder } from '@angular/compiler/src/i18n/i18n_ast';
 
 export class CHAT{
   $key:string;
@@ -24,8 +25,12 @@ export class ListChatPage implements OnInit {
   message: string = "";
   
 
-  constructor(private fAuth: AuthenticationService,private db: AngularFireDatabase,
-    private crudService: CrudService,public formBuilder: FormBuilder) {  }
+  constructor(private fAuth: AuthenticationService,
+    private db: AngularFireDatabase,
+    private crudService: CrudService,
+    public formBuilder: FormBuilder,
+    private navCtrl: NavController,
+    ) {  }
 
   ngOnInit() {
      
@@ -56,8 +61,14 @@ export class ListChatPage implements OnInit {
     
     this.fAuth.userDetails().subscribe(user => {
       this.userName = user.email;
-      this.crudService.create(this.message, this.userName)
+      this.crudService.create(this.message, this.userName);
+      this.navCtrl.navigateForward('/list-chat')
     });    
+  }
+
+  logout(){
+    this.fAuth.logout();
+    this.navCtrl.navigateForward('/login');
   }
 
 }
